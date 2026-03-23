@@ -1,19 +1,19 @@
-Level3
-A deadlock occurred because both scripts acquired the first lock and then w>
+Level 3 – Local Circular Wait
 
-sync_up held Vault Alpha and was waiting for Vault Beta.
-sync_down held Vault Beta and was waiting for Vault Alpha.
-This satisfies the Circular Wait condition: a cycle of processes waiting fo>
+Both sync_up and sync_down hold one vault lock and wait for the other, creating a circular wait. The scripts freeze because all four deadlock conditions are met locally.
 
-Level 4.
-A distributed deadlock occurred because each user locked their local vault >
+Level 4 – Site-to-Site Sync
 
-Level 5.
-By modifying Player B’s script to acquire Alpha first and Beta second, all >
+Player A and Player B each hold their local vault lock and wait for the other’s lock. This distributed circular wait freezes both users, simulating a distributed denial-of-service.
 
-Level 6.
-The timeout strategy allows a script to wait for a resource for a limited t>
+Level 5 – Global Resource Ordering
 
+All scripts acquire locks in the same global order (Alpha → Beta). Circular wait is broken, so simultaneous scripts run sequentially without deadlock.
 
-Level 7.
-Proper teardown is critical because leaving a loop device mounted while del>
+Level 6 – Deadlock Recovery (Timeout)
+
+Scripts use a timeout when waiting for a lock. If the lock is unavailable, the script aborts gracefully, preventing infinite waits and keeping the system responsive.
+
+Level 7 – Safe Ejection (Teardown)
+
+Loop devices are unmounted and detached safely, and symlinks removed. This prevents file system corruption and orphaned devices, ensuring system stability.
